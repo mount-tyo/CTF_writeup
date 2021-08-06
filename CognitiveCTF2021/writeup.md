@@ -1,9 +1,11 @@
 # CognitiveCTF2021 writeup
 
 # 使用したTool
-## jpegAnalyzer
-## wire shark
-## 青い空を見上げればいつもそこに白い猫 for うさみみハリケーン
+- jpegAnalyzer  
+- wire shark  
+- 青い空を見上げればいつもそこに白い猫 for うさみみハリケーン
+- EditThisCookie (chromeの拡張機能)
+- CyberChef (encode/decodeのwebサイト)
 
 # 50 points
 ## 2Warm
@@ -23,10 +25,10 @@ cat ./garden.jpg | findstr "CTF"
 ・cat&grepで検索してもいける  
 ・おそらくほかの方法もある
 ## handy-shellcode (pt.50)
-・linux 32bit用のshell codeをググってコピペした。　　
-・なんとなく、このプログラムでshellを呼び出すコードを書くらしい　　
-・shell codeはよくわからない　　
-・shell codeの作り方?は、アセンブリ言語を機械語に翻訳する過程を踏むらしい
+・linux 32bit用のshell codeをググってコピペした。  
+・なんとなく、このプログラムでshellを呼び出すコードを書くらしい  
+・shell codeはよくわからない  
+・shell codeの作り方?は、アセンブリ言語を機械語に翻訳する過程を踏むらしい  
 
 # 100 points
 ## 13 (pt.100)
@@ -93,9 +95,9 @@ cat file_name | grep CTF
 
 # 200 points
 ## Based
-・「CyberChef」で数字入れてautobakeすると、いい感じにでコードしてくれる
-・2, 8, 10, 16進数を文字に変換するタスク
-・utf-8？shift-jis？
+・「CyberChef」で数字入れてautobakeすると、いい感じにでコードしてくれる  
+・2, 8, 10, 16進数を文字に変換するタスク  
+・utf-8？shift-jis？  
 ## Tapping
 ・ncでアクセスすると、モールス信号が表示される
 ・モールス信号の返還サイトで変換
@@ -104,6 +106,23 @@ cat file_name | grep CTF
 ```
 nc host_name port | grep CTF
 ```
+## rsa_pop_quiz
+・結構時間かかった。RSAの仕組みと計算方法を理解しておくと速く解けそう  
+・問題文に表示されているnetcatを実行し、問題に答える  
+・全部で８問くらいあり、各問いの最初はこの問題が解けるかどうかをy/nでこたえる  
+・最後の問いで暗号文を平文に戻すが、以下のコードを使用した  
+```
+# p, n, e, c(暗号文)は事前に定義する必要あり
+q = n // p
+# pip install pycryptodome
+from Crypto.Util.number import inverse
+phai = (p - 1) * (q - 1)
+d = inverse(e, phai)
+pt = pow(c, d, n)
+print(pt)s
+```
+・表示された平文をHEXに変換し、asciiに変換する作業は、「CyberChef」がおすすめ  
+
 ## whats-the-difference
 ・結構悩んだ  
 ・cmpコマンドとgawkで差分のバイトをASCII変換  
@@ -125,3 +144,22 @@ ls -a
 cat secret_file
 ```
 
+# 250 points
+## like1000
+・.tarファイルを解凍するshellスクリプトを書く  
+・例えば以下のコードを'hoge.sh'として保存し、実行する  
+```
+#! /bin/bash
+i=100
+tmp=''
+hoge='.tar'
+for ((i=1000;i>=1;i-->))
+do
+tmp=$i$hoge
+tar -xvf $tmp
+rm $tmp
+done
+```
+```
+bash hoge.sh
+```
